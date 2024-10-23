@@ -7,7 +7,7 @@ from uuid import uuid4
 import psycopg2
 from confluent_kafka import Producer
 from faker import Faker
-
+import os
 fake = Faker()
 
 
@@ -15,10 +15,11 @@ fake = Faker()
 def gen_user_data(num_user_records: int) -> None:
     for id in range(num_user_records):
         conn = psycopg2.connect(
-            dbname="postgres",
-            user="postgres",
-            password="postgres",
-            host="postgres",
+            dbname=os.getenv("DB_NAME", "postgres"),
+            user=os.getenv("DB_USER", "postgres"),
+            password=os.getenv("DB_PASSWORD", "postgres"),
+            host=os.getenv("DB_HOST", "localhost"),  # Default to localhost
+            port=os.getenv("DB_PORT", "5432"),      # Default to 5432
         )
         curr = conn.cursor()
         curr.execute(
